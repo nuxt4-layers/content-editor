@@ -1,1 +1,1 @@
-# text-editor-service
+# @nuxt4-layers/text-editor-service
