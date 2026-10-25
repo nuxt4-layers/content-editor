@@ -10,7 +10,7 @@ People who run a site, and later people who run a group, need to write and publi
 
 | Decision | Means |
 |---|---|
-| The host passes Publisher's server functions | The host's one composition call hands content-editor `createPublisherDocument`, `transitionPublisherDocument`, `getPublisherDocument`, `listPublisherDocuments`, `listPublisherHistory` and the type registry. content-editor never imports Publisher, and Publisher's HTTP API can stay off |
+| The host passes Publisher's server functions | The host's one composition call hands content-editor `createPublisherDocument`, `transitionPublisherDocument`, `getPublisherDocument`, `listPublisherDocuments`, `listPublisherHistory`, `listPublisherModerationQueue` and the type registry. content-editor never imports Publisher, and Publisher's HTTP API can stay off |
 | It owns no content | No tables for documents or drafts. Publisher keeps every version. Any record of its own would need a design change first |
 | It decides nothing | Every action goes to Publisher, which checks permission, step-up, approval and `expectedVersion`. The editor only hides what the caller cannot do, using the shared `decide` shape |
 | A formatted editor | Built on ProseMirror (through TipTap). Each rich-text field offers only what its [rich-text](https://github.com/nuxt4-layers/rich-text/tree/68ac5b008e60ae0150171324eedeb22eb37110cc) profile allows. It saves the safe tree. Pasted content is turned into the tree, never kept as HTML |
@@ -29,6 +29,7 @@ People who run a site, and later people who run a group, need to write and publi
 | `/editor/:type` | That type's documents, with search and a status filter |
 | `/editor/:type/new`, `/editor/:type/:documentId` | The form, its status and the actions the caller holds: save, submit, withdraw, publish (with an optional schedule), unpublish, archive, reopen |
 | `/editor/:type/:documentId/history` | Versions newest first, each with who saved it and when, and restore |
+| `/editor/moderation`, `/editor/moderation/:documentId` | Publisher's moderation queue (`listPublisherModerationQueue`) for the types the caller holds `moderate` on, such as members' photos submitted to a group's album: each submission with its submitter's name, and accept or reject. Accepting and rejecting are Publisher's `moderate` action, decided by Publisher |
 
 Screens are styled only with Theme Manager's vocabulary, with wording from an en-GB message catalogue the host can override, and meet WCAG 2.2 AA in light and dark mode. Administration rules from Publisher's §15 hold: never framed, cached or sent as a Referer. People are named through the host's name component, never looked up by the editor.
 
@@ -46,7 +47,7 @@ Its own repository and design note. Agreed so far:
 
 ## Not in version 1
 
-Simultaneous editing by two people (the second save gets `conflict` and reloads), comments on drafts, moderation queue screens (Publisher's submissions), translation, and editing the site's facts (Configuration's administration, a later step).
+Simultaneous editing by two people (the second save gets `conflict` and reloads), comments on drafts, translation, and editing the site's facts (Configuration's administration, a later step).
 
 ## Order of work
 
